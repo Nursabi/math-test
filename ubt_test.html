@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <title>ҰБТ Математика Тесті (20 сұрақ)</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js диаграмма үшін -->
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://img.freepik.com/free-photo/top-view-geometric-forms-with-copy-space_23-2148830232.jpg?semt=ais_hybrid&w=740');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-color: #f0f4f8;
+        }
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            margin: 50px auto;
+            padding: 30px;
+            width: 750px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+            text-align: center;
+        }
+        button {
+            padding: 12px 25px;
+            margin: 10px;
+            background-color: #0074D9;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: #005fa3;
+            transform: scale(1.05);
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 60%;
+            margin-bottom: 20px;
+        }
+        canvas {
+            margin-top: 20px;
+            max-width: 400px;
+        }
+        mjx-container {
+            font-size: 160% !important;
+            margin: 10px 0;
+        }
+    </style>
+
+    <script>
+        let username = "";
+        let score = 0;
+        let questionIndex = 0;
+
+        const questions = [
+            {question: "1) $$ x^2 - 5x + 6 = 0 $$ түбірлерінің көбейтіндісі неге тең?", options: ["5", "6", "-6"], answer: 1},
+            {question: "2) $$ \\log_3{81} = ? $$", options: ["2", "3", "4"], answer: 2},
+            {question: "3) $$ \\sin{30^\circ} $$ мәні қандай?", options: ["1/2", "√3/2", "1"], answer: 0},
+            {question: "4) $$ c^2 = a^2 + b^2 - 2ab\\cos{C} $$, $$ a=5, b=12, C=90^\circ $$. $$ c $$ неге тең?", options: ["13", "10", "17"], answer: 0},
+            {question: "5) Үшбұрыш қабырғалары 7 см, 24 см, 25 см. Ауданы?", options: ["60", "84", "70"], answer: 1},
+            {question: "6) Автобус 60 км/сағ жылдамдықпен 2 сағат жүреді. Қанша км?", options: ["120", "100", "150"], answer: 0},
+            {question: "7) $$ \\sqrt{64} + \\sqrt{36} = ? $$", options: ["14", "16", "20"], answer: 2},
+            {question: "8) $$ \\tan{45^\circ} $$ мәні қандай?", options: ["1", "√3", "0"], answer: 0},
+            {question: "9) Арифметикалық прогрессия $$ a_1=2, d=3 $$. $$ S_5 $$ ?", options: ["40", "45", "50"], answer: 0},
+            {question: "10) $$ \\log_2{8} - \\log_2{2} = ? $$", options: ["2", "3", "1"], answer: 0},
+            {question: "11) $$ (2x-5)(x+3)=0 $$ түбірлердің қосындысы?", options: ["-2", "-3", "2"], answer: 2},
+            {question: "12) $$ \\sqrt{121} $$ мәні?", options: ["11", "10", "12"], answer: 0},
+            {question: "13) $$ \\cos{0^\circ} $$ мәні?", options: ["1", "0", "-1"], answer: 0},
+            {question: "14) Шар көлемі: $$ V = \\frac{4}{3}\\pi r^3 $$. Егер $$ r=3 $$, $$ V $$ ?", options: ["36π", "27π", "113π"], answer: 2},
+            {question: "15) $$ \\sqrt{2} \\times \\sqrt{8} = ? $$", options: ["2", "4", "√16"], answer: 2},
+            {question: "16) Бір машина 80 км/сағ жылдамдықпен 3 сағат жүрді. Жол ұзындығы?", options: ["200 км", "240 км", "300 км"], answer: 1},
+            {question: "17) $$ \\sin{90^\circ} $$ мәні қандай?", options: ["0", "1", "√2/2"], answer: 1},
+            {question: "18) $$ (x+2)^2 = 0 $$ шешімі қандай?", options: ["-2", "2", "0"], answer: 0},
+            {question: "19) $$ \\log_{10}{1000} $$ мәні қандай?", options: ["2", "3", "4"], answer: 1},
+            {question: "20) $$ \\frac{d}{dx} (x^2) = ? $$", options: ["2x", "x", "2"], answer: 0}
+        ];
+
+        function startTest() {
+            username = document.getElementById("username").value.trim();
+            if (username === "") {
+                alert("Атыңызды енгізіңіз!");
+                return;
+            }
+            document.getElementById("start").style.display = "none";
+            document.getElementById("quiz").style.display = "block";
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (questionIndex >= questions.length) {
+                saveResult();
+                return;
+            }
+            const q = questions[questionIndex];
+            document.getElementById("question").innerHTML = `<h3>${q.question}</h3>`;
+            document.getElementById("options").innerHTML = `
+                <button onclick="checkAnswer(0)">${q.options[0]}</button><br><br>
+                <button onclick="checkAnswer(1)">${q.options[1]}</button><br><br>
+                <button onclick="checkAnswer(2)">${q.options[2]}</button>
+            `;
+            MathJax.typeset();
+        }
+
+        function checkAnswer(selected) {
+            if (selected === questions[questionIndex].answer) {
+                score++;
+            }
+            questionIndex++;
+            showQuestion();
+        }
+
+        function saveResult() {
+            let history = JSON.parse(localStorage.getItem("ubt_results")) || [];
+            history.push({name: username, score: score, total: questions.length});
+            localStorage.setItem("ubt_results", JSON.stringify(history));
+            showResult(history);
+        }
+
+        function showResult(history) {
+            let sum = 0;
+            history.forEach(r => sum += r.score);
+            let avg = (sum / (history.length)).toFixed(2);
+
+            document.getElementById("quiz").innerHTML = `
+                <h2>Тест аяқталды!</h2>
+                <p><b>${username}</b>, сіз жинадыңыз: <b>${score}/${questions.length}</b> ұпай.</p>
+                <p>Барлық тапсырған тест саны: <b>${history.length}</b></p>
+                <p>Орташа нәтиже: <b>${avg}</b> ұпай.</p>
+                <canvas id="resultChart"></canvas>
+                <br><br>
+                <a href="ubt_test.html" style="color:#0074D9;">Қайта бастау</a>
+            `;
+
+            drawChart(score, questions.length - score);
+        }
+
+        function drawChart(correct, wrong) {
+            const ctx = document.getElementById('resultChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Дұрыс жауаптар', 'Қате жауаптар'],
+                    datasets: [{
+                        data: [correct, wrong],
+                        backgroundColor: ['#28a745', '#dc3545']
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <div class="content" id="start">
+        <h2>ҰБТ тестілеуі</h2>
+        <p>Атыңызды енгізіңіз:</p>
+        <input type="text" id="username" placeholder="Мысал: Kozhakmet">
+        <br>
+        <button onclick="startTest()">Тестті бастау</button>
+    </div>
+
+    <div class="content" id="quiz" style="display:none;">
+        <div id="question"></div>
+        <div id="options"></div>
+    </div>
+</body>
+</html>

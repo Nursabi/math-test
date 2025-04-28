@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <title>Деңгейлік тапсырмалар</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: url('https://sotni.ru/wp-content/uploads/2023/08/matematicheskii-fon-64.webp') no-repeat center center fixed;
+            background-size: cover;
+            background-attachment: fixed;
+            background-color: #f0f4f8;
+        }
+        .content {
+            background: rgba(255, 255, 255, 0.85);
+            width: 400px;
+            margin: 80px auto;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(6px);
+            text-align: center;
+        }
+        button {
+            padding: 12px 25px;
+            background-color: #0074D9;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #005fa3;
+            transform: scale(1.05);
+        }
+    </style>
+    <script>
+        let level = "";
+        let questions = [];
+        let score = 0;
+        let questionIndex = 0;
+
+        const easyQuestions = Array(20).fill().map((_, i) => ({
+            question: `${i+1}) 5 + ${i} = ?`,
+            options: [`${5+i}`, `${6+i}`, `${4+i}`],
+            answer: 0
+        }));
+
+        const mediumQuestions = Array(20).fill().map((_, i) => ({
+            question: `${i+1}) (x+${i})^2 формуласын аш`,
+            options: [`x^2+2x+${i*i}`, `x^2+2${i}x+${i*i}`, `x^2+${i}x+${i}`],
+            answer: 1
+        }));
+
+        const hardQuestions = Array(20).fill().map((_, i) => ({
+            question: `${i+1}) log2(${2**(i+2)})=?`,
+            options: [`${i+1}`, `${i+2}`, `${i+3}`],
+            answer: 1
+        }));
+
+        function startLevel(selectedLevel) {
+            level = selectedLevel;
+            score = 0;
+            questionIndex = 0;
+
+            if (level === 'easy') {
+                questions = easyQuestions;
+            } else if (level === 'medium') {
+                questions = mediumQuestions;
+            } else if (level === 'hard') {
+                questions = hardQuestions;
+            }
+
+            document.getElementById('menu').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (questionIndex >= questions.length) {
+                document.getElementById("quiz").innerHTML = `<h2>Деңгей аяқталды!</h2><p>Сен жинадың: <b>${score}</b> балл!</p><p><a href="levels.html" style="color:#0074D9;">Басты бетке қайту</a></p>`;
+                return;
+            }
+
+            const q = questions[questionIndex];
+            document.getElementById("question").innerHTML = `<h3>${q.question}</h3>`;
+
+            document.getElementById("options").innerHTML = `
+                <button onclick="checkAnswer(0)">${q.options[0]}</button><br><br>
+                <button onclick="checkAnswer(1)">${q.options[1]}</button><br><br>
+                <button onclick="checkAnswer(2)">${q.options[2]}</button>
+            `;
+        }
+
+        function checkAnswer(selected) {
+            if (selected === questions[questionIndex].answer) {
+                score++;
+            }
+            questionIndex++;
+            showQuestion();
+        }
+    </script>
+</head>
+<body>
+    <div class="content" id="menu">
+        <h1>Деңгейлік тапсырмалар</h1>
+        <button onclick="startLevel('easy')">Оңай деңгей</button><br>
+        <button onclick="startLevel('medium')">Орташа деңгей</button><br>
+        <button onclick="startLevel('hard')">Қиын деңгей</button>
+    </div>
+
+    <div class="content" id="quiz" style="display:none;">
+        <div id="question"></div>
+        <div id="options"></div>
+    </div>
+</body>
+</html>

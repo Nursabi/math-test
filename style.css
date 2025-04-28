@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIMYy3HaaW1WwPZl4T2XAYTJI-Pk39zuC8RpY7XKg&usqp=CAE&s') no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+    background-color: #f0f4f8;
+}
+
+.login-container, .content {
+    background: rgba(255, 255, 255, 0.9);
+    width: 400px;
+    margin: 80px auto;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(6px);
+    text-align: center;
+}
+
+input[type="text"], input[type="password"] {
+    width: 90%;
+    padding: 12px;
+    margin: 12px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+button {
+    padding: 12px 25px;
+    background-color: #0074D9;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background-color: #005fa3;
+    transform: scale(1.05);
+}
+
+a {
+    color: #0074D9;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
